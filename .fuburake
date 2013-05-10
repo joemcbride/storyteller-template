@@ -1,0 +1,5 @@
+task :default do
+	File.open("../TESTS.txt", 'a') do |f|
+		f.puts "#{FUBU_PROJECT_NAME}.Tests"
+	end
+end
