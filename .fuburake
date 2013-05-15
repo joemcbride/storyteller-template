@@ -30,7 +30,9 @@ def update_ripple_config
   add_dependency(xml, nugets, "structuremap", "2.6.3", "Fixed")
   add_dependency(xml, nugets, "structuremap.automocking", "2.6.3", "Fixed")
 
-  xml.root.add_child(nugets)
+  unless nugets.parent
+    xml.root.add_child(nugets)
+  end
 
   File.open(file_name, "w") do |file|
     file.puts xml.to_xml
