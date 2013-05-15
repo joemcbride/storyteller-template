@@ -1,0 +1,42 @@
+require 'nokogiri'
+
+def get_or_create_node(root, node, xpath, node_name)
+  node.at_xpath(xpath) || Nokogiri::XML::Node.new(node_name, root)
+end
+
+def add_dependency(root, node, name, version, mode)
+  xpath = "Dependency[@Name='#{name}']"
+  dep = get_or_create_node(root, node, xpath, "Dependency")
+  dep['Name'] = name
+  dep['Version'] = version
+  dep['Mode'] = mode
+  dep['Stability'] = "Anything"
+
+  unless dep.parent
+    node.add_child(dep)
+  end
+end
+
+def update_ripple_config
+  file_name = "../ripple.config"
+  ripple_config = File.read(file_name)
+  xml = Nokogiri::XML(ripple_config)
+  nugets = get_or_create_node(xml, xml, "//Nugets", "Nugets")
+
+  add_dependency(xml, nugets, "Selenium.RC", "2.31.2", "Fixed")
+  add_dependency(xml, nugets, "Selenium.Support", "2.31.2", "Fixed")
+  add_dependency(xml, nugets, "Selenium.WebDriver", "2.31.2", "Fixed")
+  add_dependency(xml, nugets, "Selenium.WebDriverBackedSelenium", "2.31.2", "Fixed")
+  add_dependency(xml, nugets, "structuremap", "2.6.3", "Fixed")
+  add_dependency(xml, nugets, "structuremap.automocking", "2.6.3", "Fixed")
+
+  xml.root.add_child(nugets)
+
+  File.open(file_name, "w") do |file|
+    file.puts xml.to_xml
+  end
+end
+
+task :default do
+	update_ripple_config
+end
