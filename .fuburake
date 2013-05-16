@@ -23,6 +23,7 @@ def update_ripple_config
   xml = Nokogiri::XML(ripple_config)
   nugets = get_or_create_node(xml, xml, "//Nugets", "Nugets")
 
+  add_dependency(xml, nugets, "NUnit", "2.5.10.11092", "Fixed")
   add_dependency(xml, nugets, "Selenium.RC", "2.31.2", "Fixed")
   add_dependency(xml, nugets, "Selenium.Support", "2.31.2", "Fixed")
   add_dependency(xml, nugets, "Selenium.WebDriver", "2.31.2", "Fixed")
@@ -40,5 +41,5 @@ def update_ripple_config
 end
 
 task :default do
-	update_ripple_config
+  update_ripple_config
 end
